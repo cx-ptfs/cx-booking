@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cathay Pacific PTFS Booking</title>
+<style>
+  body {
+    margin:0; padding:0; font-family: Arial, sans-serif; background:#f9f9f9; color:#004d47;
+  }
+  header {
+    background:#fff; border-bottom:2px solid #004d47;
+    padding: 15px 30px;
+    text-align:center;
+  }
+  header img {
+    max-height:80px;
+    margin-bottom:10px;
+  }
+  header h1 {
+    font-weight:700; font-size:1.8rem; margin:0;
+  }
+  main, section {
+    max-width:960px;
+    margin:40px auto;
+    background:#fff;
+    padding:30px 40px;
+    border-radius:8px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.1);
+  }
+  h2 {
+    border-bottom:3px solid #00665e;
+    padding-bottom:8px;
+    margin-bottom:25px;
+  }
+  label {
+    display:block;
+    margin-bottom:6px;
+    font-weight:600;
+  }
+  input, select, textarea {
+    width:100%;
+    padding:10px;
+    margin-bottom:20px;
+    border:1px solid #ccc;
+    border-radius:4px;
+    font-size:1rem;
+  }
+  button {
+    width:100%;
+    background:#00665e;
+    border:none;
+    color:#fff;
+    padding:12px;
+    font-size:1.1rem;
+    border-radius:4px;
+    cursor:pointer;
+    font-weight:700;
+    transition: background 0.3s;
+  }
+  button:hover {
+    background:#004d47;
+  }
+  footer {
+    background:#004d47;
+    color:#d4e8e5;
+    text-align:center;
+    padding:20px 10px;
+    display:flex; justify-content:center; align-items:center; gap:15px;
+    margin-top: 60px;
+  }
+  footer img {
+    height:40px;
+    filter: brightness(0) invert(1);
+  }
+  #adminPanel {
+    max-width: 960px;
+    margin: 40px auto 80px;
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    display: none;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+  }
+  th {
+    background: #00665e;
+    color: white;
+  }
+  .removeBtn {
+    background:#d9534f;
+    color:#fff;
+    border:none;
+    padding:6px 10px;
+    border-radius:4px;
+    cursor:pointer;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <!-- Replace this URL with your Cathay Pacific logo -->
+  <img src="PUT_YOUR_CATHAY_PACIFIC_LOGO_URL_HERE" alt="Cathay Pacific Logo" />
+  <h1>PTFS Booking Hub</h1>
+</header>
+
+<main>
+  <h2>Book Your Flight</h2>
+  <form id="bookingForm" novalidate>
+    <label for="username">Roblox Username</label>
+    <input type="text" id="username" placeholder="JohnDoe123" required autocomplete="off" />
+    
+    <label for="from">Departure Airport</label>
+    <input type="text" id="from" placeholder="Tokyo Haneda" required autocomplete="off" />
+    
+    <label for="to">Destination Airport</label>
+    <input type="text" id="to" placeholder="Grand Rapids GRR" required autocomplete="off" />
+    
+    <label for="date">Departure Date</label>
+    <input type="date" id="date" required />
+    
+    <label for="travelClass">Travel Class</label>
+    <select id="travelClass" required>
+      <option value="" disabled selected>Select class</option>
+      <option value="First">First</option>
+      <option value="Business">Business</option>
+      <option value="Economy">Economy</option>
+    </select>
+    
+    <button type="submit">Submit Booking</button>
+  </form>
+</main>
+
+<section>
+  <h2>Contact Us</h2>
+  <form id="contactForm" novalidate>
+    <label for="contactName">Your Name</label>
+    <input type="text" id="contactName" placeholder="John Doe" required />
+    
+    <label for="contactEmail">Your Email</label>
+    <input type="email" id="contactEmail" placeholder="john@example.com" required />
+    
+    <label for="contactMessage">Message</label>
+    <textarea id="contactMessage" rows="4" placeholder="Your message here..." required></textarea>
+    
+    <button type="submit">Send Message</button>
+  </form>
+</section>
+
+<section id="adminPanel">
+  <h2>Admin Panel <small>(Enter Passcode)</small></h2>
+  <input type="password" id="adminPasscode" placeholder="Enter passcode" autocomplete="off" />
+  
+  <div id="adminContent" style="display:none;">
+    <h3>Add Authorized User</h3>
+    <form id="addUserForm" novalidate>
+      <input type="text" id="adminUsername" placeholder="Roblox Username" required autocomplete="off" style="width:60%; display:inline-block; margin-right:10px;" />
+      <select id="adminUserClass" required style="width:30%; display:inline-block; margin-right:10px;">
+        <option value="" disabled selected>Select Class</option>
+        <option value="First">First Class</option>
+        <option value="Business">Business Class</option>
+      </select>
+      <button type="submit" style="width:auto; display:inline-block;">Add</button>
+    </form>
+
+    <h3>Authorized Users</h3>
+    <table>
+      <thead><tr><th>Username</th><th>Class</th><th>Remove</th></tr></thead>
+      <tbody id="authorizedUsers"></tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <img src="PUT_YOUR_CATHAY_PACIFIC_LOGO_URL_HERE" alt="Cathay Pacific Logo" />
+  <span>© 2025 Cathay Pacific Virtual | Powered by Roblox PTFS</span>
+</footer>
+
+<script>
+  const bookingWebhook = 'https://discord.com/api/webhooks/1385885298281680946/YtrLGL3TVNzysOtexRi-AzAz4dIwedbmBnstpmqQ1KvW3up1OVIixezlhEVDDrmzUY3_';
+  const contactWebhook = 'https://discord.com/api/webhooks/1385898607655387206/dwEVFZ-vNDRTvvY-X4k00zGY_pG2RTer4lbEKNK7ARID6hyIVmZzxV6jlxeuN2MQM4uB';
+
+  const ADMIN_PASSCODE = 'CX2468A';
+
+  let authorizedUsers = JSON.parse(localStorage.getItem('authorizedUsers') || '[]');
+
+  const adminPanel = document.getElementById('adminPanel');
+  const adminPasscodeInput = document.getElementById('adminPasscode');
+  const adminContent = document.getElementById('adminContent');
+  const authorizedUsersTbody = document.getElementById('authorizedUsers');
+
+  adminPanel.style.display = 'block'; // show admin panel for passcode input
+
+  adminPasscodeInput.addEventListener('keypress', function(e){
+    if(e.key === 'Enter'){
+      e.preventDefault();
+      if(adminPasscodeInput.value === ADMIN_PASSCODE){
+        adminContent.style.display = 'block';
+        adminPasscodeInput.style.display = 'none';
+        renderAuthorizedUsers();
+        alert('Access granted to Admin Panel');
+      } else {
+        alert('Incorrect passcode.');
+        adminPasscodeInput.value = '';
+      }
+    }
+  });
+
+  document.getElementById('bookingForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+
+    const username = this.username.value.trim();
+    const from = this.from.value.trim();
+    const to = this.to.value.trim();
+    const date = this.date.value;
+    let travelClass = this.travelClass.value;
+
+    if(!username || !from || !to || !date || !travelClass){
+      alert('Please fill all fields.');
+      return;
+    }
+
+    const isAuthorized = authorizedUsers.some(u => u.username.toLowerCase() === username.toLowerCase() && u.travelClass === travelClass);
+    if(!isAuthorized && (travelClass === 'First' || travelClass === 'Business')){
+      travelClass = 'Economy';
+    }
+
+    const payload = {
+      content: '@everyone New Booking Received!',
+      embeds: [{
+        title: 'Flight Booking Details',
+        color: 3066993,
+        fields: [
+          { name: 'Username', value: username, inline: true },
+          { name: 'From', value: from, inline: true },
+          { name: 'To', value: to, inline: true },
+          { name: 'Date', value: date, inline: true },
+          { name: 'Class', value: travelClass, inline: true },
+        ],
+        footer: { text: 'Cathay Pacific PTFS Booking System' },
+        timestamp: new Date().toISOString()
+      }]
+    };
+
+    try {
+      const res = await fetch(bookingWebhook, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if(res.ok){
+        alert('Booking submitted successfully!');
+        this.reset();
+      } else {
+        alert('Failed to submit booking. Try again later.');
+      }
+    } catch {
+      alert('Failed to submit booking. Try again later.');
+    }
+  });
+
+  document.getElementById('contactForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+
+    const name = this.contactName.value.trim();
+    const email = this.contactEmail.value.trim();
+    const message = this.contactMessage.value.trim();
+
+    if(!name || !email || !message){
+      alert('Please fill all fields.');
+      return;
+    }
+
+    const payload = {
+      embeds: [{
+        title: 'Contact Message Received',
+        color: 3447003,
+        fields: [
+          { name: 'Name', value: name, inline: true },
+          { name: 'Email', value: email, inline: true },
+          { name: 'Message', value: message, inline: false },
+        ],
+        footer: { text: 'Cathay Pacific PTFS Contact Form' },
+        timestamp: new Date().toISOString()
+      }]
+    };
+
+    try {
+      const res = await fetch(contactWebhook, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if(res.ok){
+        alert('Message sent successfully!');
+        this.reset();
+      } else {
+        alert('Failed to send message. Try again later.');
+      }
+    } catch {
+      alert('Failed to send message. Try again later.');
+    }
+  });
+
+  document.getElementById('addUserForm').addEventListener('submit', function(e){
+    e.preventDefault();
+
+    const usernameInput = document.getElementById('adminUsername');
+    const classSelect = document.getElementById('adminUserClass');
+    const username = usernameInput.value.trim();
+    const travelClass = classSelect.value;
+
+    if(!username || !travelClass){
+      alert('Please fill all fields.');
+      return;
+    }
+
+    if(authorizedUsers.some(u => u.username.toLowerCase() === username.toLowerCase() && u.travelClass === travelClass)){
+      alert('User already authorized for this class.');
+      return;
+    }
+
+    authorizedUsers.push({ username, travelClass });
+    localStorage.setItem('authorizedUsers', JSON.stringify(authorizedUsers));
+    renderAuthorizedUsers();
+
+    usernameInput.value = '';
+    classSelect.value = '';
+  });
+
+  function renderAuthorizedUsers(){
+    authorizedUsersTbody.innerHTML = '';
+    authorizedUsers.forEach((user, idx) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${user.username}</td>
+        <td>${user.travelClass}</td>
+        <td><button class="removeBtn" data-index="${idx}">Remove</button></td>
+      `;
+      authorizedUsersTbody.appendChild(tr);
+    });
+
+    authorizedUsersTbody.querySelectorAll('.removeBtn').forEach(btn => {
+      btn.onclick = function(){
+        const i = this.dataset.index;
+        authorizedUsers.splice(i, 1);
+        localStorage.setItem('authorizedUsers', JSON.stringify(authorizedUsers));
+        renderAuthorizedUsers();
+      };
+    });
+  }
+</script>
+
+</body>
+</html>
