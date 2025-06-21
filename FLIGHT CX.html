@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cathay Pacific | Flight Announcement</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #f0f6f6;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #004d47;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #fff;
+      border-bottom: 2px solid #004d47;
+      padding: 15px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
+    }
+    header img {
+      height: 60px;
+    }
+    main.container {
+      max-width: 600px;
+      background-color: white;
+      padding: 30px 40px;
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgb(0 0 0 / 0.1);
+      margin: 50px auto;
+    }
+    h2 {
+      border-bottom: 3px solid #00665e;
+      padding-bottom: 8px;
+      margin-bottom: 25px;
+    }
+    .btn-success {
+      background-color: #00665e;
+      border: none;
+    }
+    .btn-success:hover {
+      background-color: #004d47;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="PUT_YOUR_CATHAY_PACIFIC_LOGO_URL_HERE" alt="Cathay Pacific Logo" />
+  </header>
+
+  <main class="container">
+    <h2>✈️ Post Flight Announcement</h2>
+    <form id="announcementForm" novalidate>
+      <div class="mb-3">
+        <label for="host" class="form-label">Host Name</label>
+        <input type="text" id="host" class="form-control" placeholder="e.g. Captain John" required />
+        <div class="invalid-feedback">Please enter the host name.</div>
+      </div>
+
+      <div class="mb-3">
+        <label for="route" class="form-label">Route</label>
+        <input type="text" id="route" class="form-control" placeholder="e.g. HKG - JFK" required />
+        <div class="invalid-feedback">Please enter the route.</div>
+      </div>
+
+      <div class="mb-3">
+        <label for="aircraft" class="form-label">Aircraft</label>
+        <input type="text" id="aircraft" class="form-control" placeholder="e.g. Airbus A350-900" required />
+        <div class="invalid-feedback">Please enter the aircraft type.</div>
+      </div>
+
+      <div class="mb-3">
+        <label for="datetime" class="form-label">Date & Time</label>
+        <input type="text" id="datetime" class="form-control" placeholder="e.g. 2025-06-25 15:00" required />
+        <div class="invalid-feedback">Please enter the date and time.</div>
+      </div>
+
+      <div class="mb-3">
+        <label for="joinLink" class="form-label">Join Link</label>
+        <input type="url" id="joinLink" class="form-control" placeholder="https://discord.gg/yourserver" required />
+        <div class="invalid-feedback">Please enter a valid join link.</div>
+      </div>
+
+      <div class="mb-3">
+        <label for="extraInfo" class="form-label">Additional Information</label>
+        <textarea id="extraInfo" class="form-control" rows="4" placeholder="Any extra details..."></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-success w-100">Send Announcement</button>
+    </form>
+  </main>
+
+  <script>
+    const announcementForm = document.getElementById('announcementForm');
+
+    announcementForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      if (!announcementForm.checkValidity()) {
+        announcementForm.classList.add('was-validated');
+        return;
+      }
+
+      const host = document.getElementById('host').value.trim();
+      const route = document.getElementById('route').value.trim();
+      const aircraft = document.getElementById('aircraft').value.trim();
+      const datetime = document.getElementById('datetime').value.trim();
+      const joinLink = document.getElementById('joinLink').value.trim();
+      const extraInfo = document.getElementById('extraInfo').value.trim();
+
+      // Format message
+      const message = 
+`# FLIGHT ANNOUNCEMENT
+Good day, everyone!  
+${host} will be hosting a scheduled flight! If you want to join, come along, grab a role, and enjoy! As we enjoy this event, I kindly ask everyone to maintain a positive and respectful attitude. Please refrain from any disputes over roles; any significant disagreements may result in the early conclusion of the flight.
+
+Flight Information:
+**Host:** ${host}
+**Route:** ${route}
+**Aircraft:** ${aircraft}
+**Date & Time:** ${datetime}
+
+Possible promotions after the flight 👀 .
+
+🔗 Join here: ${joinLink}
+
+${extraInfo ? 'ℹ️ Additional Information:\n' + extraInfo : ''}`;
+
+      const payload = { content: message };
+
+      fetch('https://discord.com/api/webhooks/1385976824852648097/qw7Sy8ztDLleyBZ7eeMvkWWPiQxNRBZbuGXC-0PrV2lYfzDT7WbSkwiR51L7Pbj5R24f', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+      .then(res => {
+        if (res.ok) {
+          alert('✅ Announcement sent successfully!');
+          announcementForm.reset();
+          announcementForm.classList.remove('was-validated');
+        } else {
+          alert('❌ Failed to send announcement.');
+        }
+      })
+      .catch(() => alert('⚠️ Network error. Please try again later.'));
+    });
+  </script>
+</body>
+</html>
